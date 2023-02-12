@@ -229,6 +229,21 @@ Lastly, I had three modules fail because they couldn't compile against
 `kdl/frames.hpp`, despite it being present in `/opt/homebrew/include`,
 and `/opt/homebrew/` being in the `CMAKE_PREFIX` list.
 
+```text
+[ 50%] Building CXX object CMakeFiles/tf2_eigen_kdl.dir/src/tf2_eigen_kdl.cpp.o
+In file included from /Users/mryall/opt/ros2/ros2-humble/src/ros2/geometry2/tf2_eigen_kdl/src/tf2_eigen_kdl.cpp:33:
+/Users/mryall/opt/ros2/ros2-humble/src/ros2/geometry2/tf2_eigen_kdl/include/tf2_eigen_kdl/tf2_eigen_kdl.hpp:48:32: warning: unknown warning group '-Wclass-memaccess', ignored [-Wunknown-warning-option]
+#pragma GCC diagnostic ignored "-Wclass-memaccess"
+                               ^
+/Users/mryall/opt/ros2/ros2-humble/src/ros2/geometry2/tf2_eigen_kdl/include/tf2_eigen_kdl/tf2_eigen_kdl.hpp:56:10: fatal error: 'kdl/frames.hpp' file not found
+#include "kdl/frames.hpp"
+         ^~~~~~~~~~~~~~~~
+1 warning and 1 error generated.
+make[2]: *** [CMakeFiles/tf2_eigen_kdl.dir/src/tf2_eigen_kdl.cpp.o] Error 1
+make[1]: *** [CMakeFiles/tf2_eigen_kdl.dir/all] Error 2
+make: *** [all] Error 2
+```
+
 I was already at my wit's end for why this might be happening, so I
 just hard-coded the `/opt/homebrew/include` in the include path for
 each affected module.
