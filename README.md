@@ -18,6 +18,16 @@ Many thanks to the online references that got me through this epic journey:
       to patch `rviz_ogre_vendor`, which was a good start, but required more
       changes (see below)
 
+
+## 0. Don't disable System Integrity Protection (SIP)
+
+I'm always sceptical when I see some random software installation guide asking
+me to disable an operating-system-wide security feature like SIP. It really
+looks like the maintainers don't know what they're doing on the platform.
+
+In this case, I didn't need to disable SIP on my Mac to get it to build, so
+I would suggest you don't disable it either.
+
 ## 1. Create your Python virtual environment outside the ROS directory
 
 ROS2 uses a tool called `colcon` to build all its code in parallel. Very
@@ -43,9 +53,10 @@ activate the virtual environment is probably the reason for that.
 
 ## 2. Get the source normally
 
-Follow the regular instructions to get the source code using the `vcs` tool.
-There are no special requirements here - you should be able to build all the
-components when you are done with the fixes here.
+[Follow the regular instructions](https://docs.ros.org/en/humble/Installation/Alternatives/macOS-Development-Setup.html)
+to get the source code using the `vcs` tool. There is no need to 
+requirements here - you should be able to build all the components when you
+are done with the fixes here.
 
 ## 3. Build with a script that sets the environment properly
 
