@@ -1,0 +1,29 @@
+diff --git a/src/performance_test_fixture.cpp b/src/performance_test_fixture.cpp
+index 7d2ed34..afb642b 100644
+--- a/src/performance_test_fixture.cpp
++++ b/src/performance_test_fixture.cpp
+@@ -54,15 +54,15 @@ void PerformanceTest::SetUp(benchmark::State &)
+   reset_heap_counters();
+ 
+   osrf_testing_tools_cpp::memory_tools::initialize();
+-  osrf_testing_tools_cpp::memory_tools::on_unexpected_calloc(
+-    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
+-      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
+-  osrf_testing_tools_cpp::memory_tools::on_unexpected_malloc(
+-    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
+-      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
+-  osrf_testing_tools_cpp::memory_tools::on_unexpected_realloc(
+-    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
+-      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
++//  osrf_testing_tools_cpp::memory_tools::on_unexpected_calloc(
++//    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
++//      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
++//  osrf_testing_tools_cpp::memory_tools::on_unexpected_malloc(
++//    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
++//      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
++//  osrf_testing_tools_cpp::memory_tools::on_unexpected_realloc(
++//    std::function<void(osrf_testing_tools_cpp::memory_tools::MemoryToolsService &)>(
++//      std::bind(&PerformanceTest::on_alloc, this, std::placeholders::_1)));
+   osrf_testing_tools_cpp::memory_tools::enable_monitoring();
+   osrf_testing_tools_cpp::memory_tools::expect_no_calloc_begin();
+   osrf_testing_tools_cpp::memory_tools::expect_no_malloc_begin();

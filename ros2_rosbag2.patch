@@ -1,0 +1,12 @@
+diff --git a/mcap_vendor/CMakeLists.txt b/mcap_vendor/CMakeLists.txt
+index 6de89d2..d658090 100644
+--- a/mcap_vendor/CMakeLists.txt
++++ b/mcap_vendor/CMakeLists.txt
+@@ -56,6 +56,7 @@ macro(build_mcap_vendor)
+ 
+   target_include_directories(mcap PRIVATE
+     ${lz4_SOURCE_DIR}/lib
++    /opt/homebrew/lib
+   )
+   target_include_directories(mcap PUBLIC
+     "$<BUILD_INTERFACE:${_mcap_include_dir}>"

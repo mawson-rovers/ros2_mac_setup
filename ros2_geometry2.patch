@@ -1,0 +1,23 @@
+diff --git a/tf2_eigen_kdl/CMakeLists.txt b/tf2_eigen_kdl/CMakeLists.txt
+index 9bdfa1d..ce3987b 100644
+--- a/tf2_eigen_kdl/CMakeLists.txt
++++ b/tf2_eigen_kdl/CMakeLists.txt
+@@ -24,7 +24,8 @@ add_library(${PROJECT_NAME} SHARED
+ )
+ target_include_directories(${PROJECT_NAME} PUBLIC
+   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+-  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
++  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
++  "/opt/homebrew/include")
+ target_link_libraries(${PROJECT_NAME} PUBLIC
+   orocos-kdl
+   tf2::tf2)
+@@ -55,7 +56,7 @@ ament_export_dependencies(
+ )
+ 
+ # Export old-style CMake variables
+-ament_export_include_directories("include/${PROJECT_NAME}")
++ament_export_include_directories("include/${PROJECT_NAME}" "/opt/homebrew/include")
+ ament_export_libraries(${PROJECT_NAME})
+ 
+ # Export modern CMake targets

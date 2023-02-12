@@ -1,0 +1,151 @@
+diff --git a/rviz_ogre_vendor/CMakeLists.txt b/rviz_ogre_vendor/CMakeLists.txt
+index 122f2f29..4c1f551e 100644
+--- a/rviz_ogre_vendor/CMakeLists.txt
++++ b/rviz_ogre_vendor/CMakeLists.txt
+@@ -125,7 +125,12 @@ macro(build_ogre)
+     set(OGRE_CXX_FLAGS "${OGRE_CXX_FLAGS} /w /EHsc")
+   elseif(APPLE)
+     set(OGRE_CXX_FLAGS "${OGRE_CXX_FLAGS} -std=c++14 -stdlib=libc++ -w")
+-    list(APPEND extra_cmake_args "-DCMAKE_OSX_ARCHITECTURES='x86_64'")
++    # Ogre build defaults to x86_64 unless CMAKE_OSX_ARCHITECTURES is explicitly passed in
++    if (NOT CMAKE_OSX_ARCHITECTURES)
++      list(APPEND extra_cmake_args "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_SYSTEM_PROCESSOR}")
++    else()
++      list(APPEND extra_cmake_args "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
++    endif()
+   else()  # Linux
+     set(OGRE_C_FLAGS "${OGRE_C_FLAGS} -w")
+     # include Clang -Wno-everything to disable warnings in that build. GCC doesn't mind it
+@@ -185,6 +190,7 @@ macro(build_ogre)
+       -DOGRE_BUILD_COMPONENT_JAVA:BOOL=FALSE
+       -DOGRE_BUILD_COMPONENT_CSHARP:BOOL=FALSE
+       -DOGRE_BUILD_COMPONENT_BITES:BOOL=FALSE
++      -DOGRE_ENABLE_PRECOMPILED_HEADERS:BOOL=OFF
+       ${extra_cmake_args}
+       -Wno-dev
+     PATCH_COMMAND
+diff --git a/rviz_ogre_vendor/fix-arm64.diff b/rviz_ogre_vendor/fix-arm64.diff
+index 18b2739f..689d0506 100644
+--- a/rviz_ogre_vendor/fix-arm64.diff
++++ b/rviz_ogre_vendor/fix-arm64.diff
+@@ -19,3 +19,120 @@ index 9d1a39bc8..ad8beee35 100644
+          #include <sys/sysctl.h>
+          #if __MACH__
+              #include <mach/machine.h>
++
++--- a/OgreMain/include/OgrePlatform.h
+++++ b/OgreMain/include/OgrePlatform.h
++@@ -55,6 +55,45 @@
++ #define OGRE_ARCHITECTURE_32 1
++ #define OGRE_ARCHITECTURE_64 2
++
+++#define OGRE_CPU_UNKNOWN    0
+++#define OGRE_CPU_X86        1
+++#define OGRE_CPU_PPC        2
+++#define OGRE_CPU_ARM        3
+++#define OGRE_CPU_MIPS       4
+++
+++/* Find CPU type */
+++#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64) || defined(_M_AMD64)
+++#   define OGRE_CPU OGRE_CPU_X86
+++#elif defined(__ppc__) || defined(__ppc64__) || defined(_M_PPC)
+++#   define OGRE_CPU OGRE_CPU_PPC
+++#elif defined(__arm__) || defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM) || defined(_M_ARM64)
+++#   define OGRE_CPU OGRE_CPU_ARM
+++#elif defined(__mips__) || defined(__mips64) || defined(__mips64_) || defined(_M_MIPS)
+++#   define OGRE_CPU OGRE_CPU_MIPS
+++#else
+++#   define OGRE_CPU OGRE_CPU_UNKNOWN
+++#endif
+++
+++/* Find the arch type */
+++#if defined(__x86_64__) || defined(_M_X64) || defined(_M_X64) || defined(_M_AMD64) \
+++ || defined(__ppc64__) \
+++ || defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64) \
+++ || defined(__mips64) || defined(__mips64_) \
+++ || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__)
+++#   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_64
+++#else
+++#   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_32
+++#endif
+++
+++/* Determine CPU endian.
+++   We were once in situation when XCode could produce mixed endian fat binary with x86 and ppc archs inside, so it's safer to sniff compiler macros too
+++ */
+++#if defined(OGRE_CONFIG_BIG_ENDIAN) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+++#    define OGRE_ENDIAN OGRE_ENDIAN_BIG
+++#else
+++#    define OGRE_ENDIAN OGRE_ENDIAN_LITTLE
+++#endif
+++
++ /* Finds the compiler type and version.
++ */
++ #if (defined( __WIN32__ ) || defined( _WIN32 )) && defined(__ANDROID__) // We are using NVTegra
++@@ -159,13 +198,6 @@
++ #   define OGRE_PLATFORM OGRE_PLATFORM_LINUX
++ #endif
++
++-    /* Find the arch type */
++-#if defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64) || defined(_M_ARM64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__) || defined(__arm64__) || defined(__aarch64__) || defined(__mips64) || defined(__mips64_)
++-#   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_64
++-#else
++-#   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_32
++-#endif
++-
++ /* Find how to declare aligned variable. */
++ #if OGRE_COMPILER == OGRE_COMPILER_MSVC
++ #   define OGRE_ALIGNED_DECL(type, var, alignment)  __declspec(align(alignment)) type var
++@@ -218,15 +250,6 @@
++ #endif
++
++ //----------------------------------------------------------------------------
++-// Endian Settings
++-// check for BIG_ENDIAN config flag, set OGRE_ENDIAN correctly
++-#ifdef OGRE_CONFIG_BIG_ENDIAN
++-#    define OGRE_ENDIAN OGRE_ENDIAN_BIG
++-#else
++-#    define OGRE_ENDIAN OGRE_ENDIAN_LITTLE
++-#endif
++-
++-//----------------------------------------------------------------------------
++ // Set the default locale for strings
++ #if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
++ //  Locales are not supported by the C lib you have to go through JNI.
++
++--- a/OgreMain/include/OgrePlatformInformation.h
+++++ b/OgreMain/include/OgrePlatformInformation.h
++@@ -35,34 +35,6 @@
++ // TODO: Puts following macros into OgrePlatform.h?
++ //
++
++-/* Initial CPU stuff to set.
++-*/
++-#define OGRE_CPU_UNKNOWN    0
++-#define OGRE_CPU_X86        1
++-#define OGRE_CPU_PPC        2
++-#define OGRE_CPU_ARM        3
++-#define OGRE_CPU_MIPS       4
++-
++-/* Find CPU type
++-*/
++-#if (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))) || \
++-    (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
++-#   define OGRE_CPU OGRE_CPU_X86
++-
++-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE && defined(__BIG_ENDIAN__)
++-#   define OGRE_CPU OGRE_CPU_PPC
++-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
++-#   define OGRE_CPU OGRE_CPU_X86
++-#elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS && (defined(__i386__) || defined(__x86_64__))
++-#   define OGRE_CPU OGRE_CPU_X86
++-#elif defined(__arm__) || defined(_M_ARM) || defined(__arm64__) || defined(__aarch64__)
++-#   define OGRE_CPU OGRE_CPU_ARM
++-#elif defined(__mips64) || defined(__mips64_)
++-#   define OGRE_CPU OGRE_CPU_MIPS
++-#else
++-#   define OGRE_CPU OGRE_CPU_UNKNOWN
++-#endif
++-
++ /* Define whether or not Ogre compiled with SSE supports.
++ */
++ #if   OGRE_DOUBLE_PRECISION == 0 && OGRE_CPU == OGRE_CPU_X86 && OGRE_COMPILER == OGRE_COMPILER_MSVC
