@@ -54,9 +54,11 @@ activate the virtual environment is probably the reason for that.
 ## 2. Get the source normally
 
 [Follow the regular instructions](https://docs.ros.org/en/humble/Installation/Alternatives/macOS-Development-Setup.html)
-to get the source code using the `vcs` tool. There is no need to 
-requirements here - you should be able to build all the components when you
-are done with the fixes here.
+to get the source code using the `vcs` tool.
+
+You do not need to use a limited set of components. By following all the
+fixes described here, I was able to get all the components to build on
+my Mac.
 
 ## 3. Copy build script to set the environment properly
 
