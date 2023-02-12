@@ -229,7 +229,7 @@ just commented out the offending code.
 
 Lastly, I had three modules fail because they couldn't compile against
 `kdl/frames.hpp`, despite it being present in `/opt/homebrew/include`,
-and `/opt/homebrew/` being in the `CMAKE_PREFIX` list.
+and `/opt/homebrew/` being in the `CMAKE_PREFIX_PATH` list.
 
 ```text
 [ 50%] Building CXX object CMakeFiles/tf2_eigen_kdl.dir/src/tf2_eigen_kdl.cpp.o
