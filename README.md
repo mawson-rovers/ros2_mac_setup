@@ -225,7 +225,7 @@ against the linker.
 In my case, I'm not interested in running any ROS performance tests, so I
 just commented out the offending code.
 
-### Patch for missing include on `kdl/frames.hpp`
+### 4.3 Patch for missing include on `kdl/frames.hpp`
 
 Lastly, I had three modules fail because they couldn't compile against
 `kdl/frames.hpp`, despite it being present in `/opt/homebrew/include`,
