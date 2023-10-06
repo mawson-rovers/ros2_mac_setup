@@ -1,0 +1,28 @@
+[1mdiff --git a/tf2_eigen_kdl/CMakeLists.txt b/tf2_eigen_kdl/CMakeLists.txt[m
+[1mindex c52a0591..125aacdf 100644[m
+[1m--- a/tf2_eigen_kdl/CMakeLists.txt[m
+[1m+++ b/tf2_eigen_kdl/CMakeLists.txt[m
+[36m@@ -25,7 +25,8 @@[m [madd_library(${PROJECT_NAME} SHARED[m
+ )[m
+ target_include_directories(${PROJECT_NAME} PUBLIC[m
+   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"[m
+[31m-  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")[m
+[32m+[m[32m  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"[m
+[32m+[m[32m  "${orocos_kdl_INCLUDE_DIRS}")[m
+ target_link_libraries(${PROJECT_NAME} PUBLIC[m
+   orocos-kdl[m
+   tf2::tf2)[m
+[1mdiff --git a/tf2_geometry_msgs/CMakeLists.txt b/tf2_geometry_msgs/CMakeLists.txt[m
+[1mindex f14802b0..6e0afa16 100644[m
+[1m--- a/tf2_geometry_msgs/CMakeLists.txt[m
+[1m+++ b/tf2_geometry_msgs/CMakeLists.txt[m
+[36m@@ -31,7 +31,8 @@[m [mament_python_install_package(${PROJECT_NAME}[m
+ add_library(${PROJECT_NAME} INTERFACE)[m
+ target_include_directories(${PROJECT_NAME} INTERFACE[m
+   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"[m
+[31m-  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")[m
+[32m+[m[32m  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"[m
+[32m+[m[32m  "${orocos_kdl_INCLUDE_DIRS}")[m
+ target_link_libraries(${PROJECT_NAME} INTERFACE[m
+   ${geometry_msgs_TARGETS}[m
+   orocos-kdl[m
