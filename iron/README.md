@@ -51,6 +51,11 @@ whenever you are building or rebuilding ROS components. So if you get a
 `ModuleNotFound` error at the start of a colcon build, forgetting to
 activate the virtual environment is probably the reason for that.
 
+But the most important point -- do **not** check out the ROS code in
+the same location. Create a new `~/src/ros/ros2-iron/` directory for
+the code that `colcon` will build, so it does not try to build any of
+the Python dependencies in the venv.
+
 ## 2. Get the source normally
 
 [Follow the regular instructions](https://docs.ros.org/en/iron/Installation/Alternatives/macOS-Development-Setup.html)
@@ -68,7 +73,7 @@ and pip dependencies.
 I needed to make some changes to dependencies installed via Homebrew and
 pip, compared to the list in the normal instructions:
 
-* I had to uninstall `qt` from Homebrew, so only `qt@5` was available
+* I had to unlink `qt` from Homebrew, so only `qt@5` was available
   during compilation. Unfortunately, a standard uninstall failed:
 
   ```
@@ -85,7 +90,7 @@ pip, compared to the list in the normal instructions:
   Unlinking /opt/homebrew/Cellar/qt/6.5.1_3... 3792 symlinks removed.
   ```
 
-* I had to upgrade mypy, one of the ROS2 pip dependencies, from an old version
+* I also had to upgrade mypy, one of the ROS2 pip dependencies, from an old version
   of 0.931 set in the ROS2 Iron instructions, to the current version that supports
   Python 3.11:
 
