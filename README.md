@@ -21,8 +21,8 @@ Many thanks to the online references that got me through this epic journey:
 There are now two versions of the guide depending on which version of ROS2
 you are using:
 
-* ROS2 Iron (latest) - see [iron/README.md](iron/README.md) and the patch in the `iron/` directory
-* ROS2 Humble - see [humble/README.md](humble/README.md) and the patches in the `humble/` directory
+* ROS2 Iron (latest) - see [iron/README.md](iron/) and the patch in the `iron/` directory
+* ROS2 Humble - see [humble/README.md](humble/) and the patches in the `humble/` directory
 
 Fortunately, this process seems to be getting easier with newer versions, so
 if you have the choice, go with Iron instead of Humble.
